@@ -4,17 +4,18 @@ const supertest = require('supertest')
 const app = require('../src/app')
 
 describe('Folders endpoint', () => {
-
   let db
-
   before(() => {
     db = knex({
       client: 'pg',
       connection: process.env.TEST_DB_URL
     })
+    app.set('db', db)
   })
   
-  app.set('db', db)
+  // before('truncate', () => db('folders').truncate());
+  // before('truncate', () => db('folders').truncate());
+  
 
   describe('GET /api/folders', () => {
     context('Given no data in the folders table', () => {
