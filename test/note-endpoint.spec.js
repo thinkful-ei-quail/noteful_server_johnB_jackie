@@ -16,13 +16,26 @@ describe('notes endpoint', () => {
   
   // before('truncate', () => db('notes').truncate());
   // before('truncate', () => db('notes').truncate());
- 
+  after('destroy connection', () => db.destroy());
+
   describe('GET /api/notes', () => {
     context('Given no data in the notes table', () => {
       it.skip('responds with 200 and empty array', () => {
         return supertest(app)
           .get('/api/notes')
           .expect(200, [])
+      })
+    })
+    context('Given data in the notes table', () => {
+      beforeEach('insert note data', () => {
+        const testNotes = makeNotesArray()
+        return db('notes')
+          .insert(testNotes)
+      })
+      it('responds with 200 and folders', () => {
+        return supertest(app)
+          .get('/api/notes')
+          .expect(200)
       })
     })
   })
