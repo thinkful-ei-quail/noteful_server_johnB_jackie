@@ -16,6 +16,8 @@ describe('Folders endpoint', () => {
     app.set('db', db)
   })
 
+  before('truncate tables', () => db.raw('TRUNCATE folders, notes RESTART IDENTITY CASCADE'))
+
   after('destroy connection to db', () => db.destroy())
   
   
@@ -29,14 +31,19 @@ describe('Folders endpoint', () => {
       })
     })
     context('Given data in the folders table', () => {
-      beforeEach('insert folder data', () => {
-        const testFolders = makeFoldersArray()
+      const testFolders = makeFoldersArray()
+      
+      beforeEach('insert folder data', () => {  
         return db('folders')
           .insert(testFolders)
       })
 
-      it('responds with 200 and folders', () => {
+      afterEach('clean table', () => db.raw('TRUNCATE folders, notes RESTART IDENTITY CASCADE'))
 
+      it('responds with 200 and folders', () => {
+        return supertest(app)
+          .get('/api/folders')
+          .expect(200, testFolders)
       })
     })
   })
