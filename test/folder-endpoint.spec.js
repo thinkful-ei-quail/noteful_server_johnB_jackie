@@ -5,7 +5,6 @@ const app = require('../src/app.js')
 const { makeFoldersArray } = require('./folders.fixtures')
 
 describe('Folders endpoint', () => {
-
   let db
 
   before('make knex instance', () => {
