@@ -20,6 +20,10 @@ describe('Folders endpoint', () => {
 
   after('destroy connection to db', () => db.destroy())
 
+  afterEach('clean tables', () => {
+    return db.raw('TRUNCATE notes, folders RESTART IDENTITY CASCADE')
+  })
+
 
 
   describe('GET /api/folders endpoint', () => {
@@ -67,9 +71,7 @@ describe('Folders endpoint', () => {
           .insert(testFolders)
       })
 
-      afterEach('clean tables', () => {
-        return db.raw('TRUNCATE notes, folders RESTART IDENTITY CASCADE')
-      })
+      
 
       it('should respond 200 with folder matching id', () => {
         const expectedId = 1
@@ -85,7 +87,6 @@ describe('Folders endpoint', () => {
       it('should respond with 201 and location header', function() {
         this.retries(3)
         const newFolder = {
-          id: 3,
           name: 'New Test Folder'
         }
         return supertest(app)
@@ -96,7 +97,7 @@ describe('Folders endpoint', () => {
           })
           .expect(201)
           .expect(res => {
-            expect(res.body.id).to.eql(newFolder.id)
+            expect(res.body).to.have.property('id')
             expect(res.body.name).to.eql(newFolder.name)
             const expected = new Date().toLocaleString
             const actual = new Date(res.body.modified).toLocaleString
@@ -127,6 +128,26 @@ describe('Folders endpoint', () => {
           .delete(`/api/folders/${folderId}`)
           .expect(404, {
             error: { message: 'Folder Not Found' }
+          })
+      })
+    })
+    context('Given data in folders table', () => {
+      const testFolders = makeFoldersArray()
+      beforeEach('insert folders into db', () => {
+        return db
+          .insert(testFolders)
+          .into('folders')
+      })
+      it.only('should remove folder with matching id from db', () => {
+        const idToRemove = 1
+        const expectedFolders = testFolders.filter(folder => folder.id !== idToRemove)
+        return supertest(app)
+          .delete(`/api/folders/${idToRemove}`)
+          .expect(204)
+          .then(() => {
+            return supertest(app)
+              .get('/api/folders')
+              .expect(expectedFolders)
           })
       })
     })

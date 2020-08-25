@@ -21,6 +21,12 @@ const FoldersService = {
       .then(rows => {
         return rows[0]
       })
+  },
+
+  deleteFolder(knex, id) {
+    return knex('folders')
+      .where( { id })
+      .delete()
   }
 }
 
