@@ -84,7 +84,7 @@ describe('notes endpoint', () => {
       this.retries(3)
       const newNote = {
         name: 'Test note 1',
-        folder_id: 2,
+        folderId: 2,
         content: 'Test content'
       }
       return supertest(app)
@@ -93,7 +93,7 @@ describe('notes endpoint', () => {
         .expect(201)
         .expect(res => {
           expect(res.body.name).to.eql(newNote.name)
-          expect(res.body.folder_id).to.eql(newNote.folder_id)
+          expect(res.body.folderId).to.eql(newNote.folderId)
           expect(res.body.content).to.eql(newNote.content)
           expect(res.body).to.have.property('id')
           expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`)
@@ -108,12 +108,12 @@ describe('notes endpoint', () => {
         )
     })
   })
-    const requiredFields = ['name', 'content', 'folder_id']
+    const requiredFields = ['name', 'content', 'folderId']
     requiredFields.forEach(field => {
       const newNote = {
         name:'test name',
         content:'Test content',
-        folder_id:2,
+        folderId:2,
       }
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
         delete newNote[field]

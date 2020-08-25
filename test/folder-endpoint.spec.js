@@ -138,7 +138,7 @@ describe('Folders endpoint', () => {
           .insert(testFolders)
           .into('folders')
       })
-      it.only('should remove folder with matching id from db', () => {
+      it('should remove folder with matching id from db', () => {
         const idToRemove = 1
         const expectedFolders = testFolders.filter(folder => folder.id !== idToRemove)
         return supertest(app)
