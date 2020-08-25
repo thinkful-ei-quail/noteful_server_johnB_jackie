@@ -5,7 +5,7 @@ const path = require('path')
 const notesService = require('./notes-service')
 
 const notesRouter = express.Router()
-const bodyParser = express.json()
+const jsonParser = express.json()
 
 const serializenote = note => ({
   id: note.id,
