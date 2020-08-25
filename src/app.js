@@ -4,7 +4,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 
-const { NODE_ENV } = require('../config')
+const { NODE_ENV } = require('./config')
+const foldersRouter = require('./folders/foldersRouter')
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(helmet())
 app.use(cors())
 
 // Routers go here
+app.use('/api/folders', foldersRouter)
 
 // eslint-disable-next-line no-unused-vars
 app.use(function errorHandler(error, req, res, next) {
