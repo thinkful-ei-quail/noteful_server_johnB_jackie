@@ -15,8 +15,8 @@ const NotesService = {
   },
   getById(knex, id) {
     return knex
-      .from('notes')
       .select('*')
+      .from('notes')
       .where('id', id)
       .first();
   },

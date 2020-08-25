@@ -6,7 +6,7 @@ const helmet = require('helmet')
 
 const { NODE_ENV } = require('./config')
 const foldersRouter = require('./folders/foldersRouter')
-
+const notesRouter= require('./notes/notesRouter')
 const app = express()
 
 const morganOptions = NODE_ENV === 'production' ? 'tiny' : 'dev'
@@ -17,7 +17,7 @@ app.use(cors())
 
 // Routers go here
 app.use('/api/folders', foldersRouter)
-
+app.use('/api/notes', notesRouter)
 // eslint-disable-next-line no-unused-vars
 app.use(function errorHandler(error, req, res, next) {
   let response
