@@ -2,23 +2,26 @@ const express = require('express')
 const xss = require('xss')
 const path = require('path')
 
-const notesService = require('./notes-service')
+const NotesService = require('./notes-service')
 
 const notesRouter = express.Router()
 const bodyParser = express.json()
 
-const serializenote = note => ({
+const serializeNote = note => ({
   id: note.id,
   name: xss(note.id),
-  modified: note.modified
+  modified: note.modified,
+  folderId: note.folderId,
+  content:xss(note.content)
 })
 
 notesRouter 
   .route('/')
   .get((req, res, next) => {
-    notesService.getAllnotes(req.app.get('db'))
+    const knexInstance = req.app.get('db')
+    NotesService.getAllNotes(knexInstance)
       .then(notes => 
-        res.json(notes.map(serializenote))
+        res.json(notes.map(serializeNote))
       )
       .catch(next)
   })

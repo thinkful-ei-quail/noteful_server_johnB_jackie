@@ -4,7 +4,8 @@ const knex = require('knex')
 const supertest = require('supertest')
 const app = require('../src/app')
 const { makeNotesArray } = require('./notes.fixtures')
-
+const { makeFoldersArray } = require('./folders.fixtures')
+const { before } = require('mocha')
 describe('notes endpoint', () => {
   let db
   before(() => {
@@ -14,13 +15,20 @@ describe('notes endpoint', () => {
     })
     app.set('db', db)
   })
+  const testFolders = makeFoldersArray()
+  before('insert folder data', () => {
+    return db
+      .into('folders')
+      .insert(testFolders)
+  })
+
   after('disconnect from db', () => db.destroy())
   before('clean the table', () => db('notes').truncate())
   afterEach('cleanup',() => db('notes').truncate())
 
   describe('GET /api/notes', () => {
     context('Given no data in the notes table', () => {
-      it('responds with 200 and empty array', () => {
+      it.only('responds with 200 and empty array', () => {
         return supertest(app)
           .get('/api/notes')
           .expect(200, [])
@@ -62,9 +70,9 @@ describe('notes endpoint', () => {
         it(`creates a note, responding with 201 and the new note`, () => {
           const newNote = {
             name: 'Test note 1',
-            modified: "2019-01-03T00:00:00.000Z",
-            folderId: "b0715efe-ffaf-11e8-8eb2-f2801f1b9fd1",
-            content: "Test content"
+            modified: '2019-01-03T00:00:00.000Z',
+            folderId: 'b0715efe-ffaf-11e8-8eb2-f2801f1b9fd1',
+            content: 'Test content'
           }
           return supertest(app)
             .post('/api/notes')
@@ -86,11 +94,14 @@ describe('notes endpoint', () => {
             )
         })
 
-        const requiredFields = ['title']
+        const requiredFields = ['id', 'name', 'modified', 'folderId', 'content']
 
         requiredFields.forEach(field => {
           const newNote = {
-            title:'test title'
+            name: 'Test note 1',
+            modified: '2019-01-03T00:00:00.000Z',
+            folderId: 'b0715efe-ffaf-11e8-8eb2-f2801f1b9fd1',
+            content: 'Test content'
           }
 
           it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -186,7 +197,7 @@ describe('notes endpoint', () => {
               .send({ irrelevantField: 'nope' })
               .expect(400, {
                 error: {
-                  message: `Request body must content either ''`
+                  message: `Request body must content either name, modified, content`
                 }
               })
           })
