@@ -16,5 +16,5 @@ CREATE TABLE notes (
   name TEXT NOT NULL,
   content TEXT NOT NULL,
   modified TIMESTAMPTZ DEFAULT now() NOT NULL,
-  folder_id INTEGER REFERENCES folders(id) NOT NULL
+  "folderId" INTEGER REFERENCES folders(id) NOT NULL
 );
