@@ -9,7 +9,7 @@ const bodyParser = express.json()
 
 const serializeFolder = folder => ({
   id: folder.id,
-  name: xss(folder.id),
+  name: xss(folder.name),
   modified: folder.modified
 })
 
