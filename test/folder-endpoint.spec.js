@@ -119,5 +119,16 @@ describe('Folders endpoint', () => {
       })
     })
   })
-  
+  describe('DELETE /api/folders/:folderId endpoint', () => {
+    context('Given no data in folders table', () => {
+      it('should respond with 404', () => {
+        const folderId = 123456
+        return supertest(app)
+          .delete(`/api/folders/${folderId}`)
+          .expect(404, {
+            error: { message: 'Folder Not Found' }
+          })
+      })
+    })
+  })
 })
