@@ -19,11 +19,13 @@ app.get('/', (req, res) => {
   res.send('Hello, boilerplate!')
 })
 
+// eslint-disable-next-line no-unused-vars
 app.use(function errorHandler(error, req, res, next) {
   let response
   if(NODE_ENV === 'production') {
     response = { error: {message: 'server error'}}
   } else {
+    // eslint-disable-next-line no-console
     console.error(error)
     response = { message: error.message, error }
   }
